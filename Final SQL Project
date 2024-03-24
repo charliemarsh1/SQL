@@ -1,0 +1,55 @@
+# In this SQL, I'm querying a database with multiple tables to gather statistics of a variety of things like Customers, Employees, Invoices and Sales numbers.
+
+1.Show Customers (their full names, customer ID, and country) who are not in the US.
+
+select customerid, firstname, lastname, country
+from chinook.customers
+where country <> 'USA';
+
+2.Show only the Customers from Brazil.
+
+select customerid, firstname, lastname, country
+from chinook.customers
+where country = 'Brazil';
+
+3.Find the Invoices of customers who are from Brazil. The resulting table should show the customer's full name, Invoice ID, Date of the invoice, and billing country.
+
+select c.customerid, c.firstname, c.lastname, i.invoiceid, i.invoicedate, i.billingcountry
+from chinook.customers as c
+left join chinook.invoices as i
+on c.customerid = i.customerid
+where c.country = 'Brazil';
+
+4.Show the Employees who are Sales Agents.
+
+select firstname, lastname, title
+from chinook.employees
+where title = 'Sales Support Agent';
+
+5.Find a unique/distinct list of billing countries from the Invoice table.
+
+SELECT DISTINCT billingcountry
+FROM chinook.invoices;
+
+6.Provide a query that shows the invoices associated with each sales agent. The resulting table should include the Sales Agent's full name.
+
+SELECT e.firstname, e.lastname AS 'Sales Agent Name', i.invoiceid
+FROM chinook.invoices AS i
+INNER JOIN chinook.customers AS c ON i.customerid = c.customerid
+INNER JOIN chinook.employees AS e ON c.supportrepid = e.employeeid
+ORDER BY 'Sales Agent Name' ;
+
+7.How many Invoices were there in 2009?
+
+select count(*) as 'Number of invoices in 2009'
+from chinook.invoices
+where invoicedate between '2009-01-01' and '2009-12-31' ;
+
+8.Show the total sales made by each sales agent.
+
+SELECT  e.firstname, e.lastname AS "Sales Agent Name",
+   Round(SUM(i.total), 2) AS "Total Sales"
+FROM chinook.invoices AS i
+INNER JOIN chinook.customers AS c ON i.customerid = c.customerid
+INNER JOIN chinook.employees AS e ON c.supportrepid = e.employeeid
+GROUP BY "Sales Agent Name";
